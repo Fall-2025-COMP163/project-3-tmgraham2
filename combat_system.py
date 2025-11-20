@@ -406,12 +406,19 @@ def get_victory_rewards(enemy):
     # TODO: Implement reward calculation
     # Ensures enemy is defeated
     if enemy['health'] <= 0:
-        character_xp += enemy['xp_reward']
-        character_gold += enemy['gold_reward']
+        character_xp = enemy['xp_reward']
+        xp = character_xp + enemy['xp_eward']
+        
+        character_gold = enemy['gold_reward']
+        gold = character_gold + enemy['gold_reward']
+        
         return {
-            'xp': character_xp,
-            'gold': character_gold
+            'xp': xp,
+            'gold': gold
         }
+        
+        
+    pass
         
         
     pass
