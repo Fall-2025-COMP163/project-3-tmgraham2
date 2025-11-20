@@ -452,7 +452,7 @@ if __name__ == "__main__":
     # Test loading
     try:
         loaded = load_character("TestHero")
-        print(f"Loaded: {loaded['name']}")
+        print(f"Loaded: {loaded['character_name']}")
     except CharacterNotFoundError:
         print("Character not found")
     except SaveFileCorruptedError:
