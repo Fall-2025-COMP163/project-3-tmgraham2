@@ -56,6 +56,7 @@ def create_character(name, character_class):
 
     }
 
+
     if character_class not in class_base_stats:
         raise InvalidCharacterClassError(
             f"Invalid class: {character_class}"
@@ -66,6 +67,10 @@ def create_character(name, character_class):
         'name': name,
         'class': character_class,
         'level': 1,
+        'health': base_stats['health'],
+        'max_health': base_stats['max_health'],
+        'strength': base_stats['strength'],
+        'magic': base_stats['magic'],
         'experience': 0,
         'gold': 100,
         'inventory': [],
@@ -73,7 +78,6 @@ def create_character(name, character_class):
         'completed_quests': []
 
     }
-    character.update(base_stats)
     return character
 
     pass
@@ -89,7 +93,7 @@ def save_character(character, save_directory="data/save_games"):
     CLASS: class_name
     LEVEL: 1
     HEALTH: 120
-    MAX_HEALTH: 120
+    MAX_HEALTH: 120 
     STRENGTH: 15
     MAGIC: 5
     EXPERIENCE: 0
@@ -105,7 +109,7 @@ def save_character(character, save_directory="data/save_games"):
     # Create save_directory if it doesn't exist
     # Handle any file I/O errors appropriately
     # Lists should be saved as comma-separated values
-    os.makedirs(save_directory, exist_ok=True)
+    os.makedirs(save_directory)
 
 
     character_name = character['name']
@@ -115,24 +119,20 @@ def save_character(character, save_directory="data/save_games"):
     active_quests_str = ','.join(character['active_quests'])
     completed_quests_str = ','.join(character['completed_quests'])
 
-    lines = [
-        f"NAME: {character['name']}\n",
-        f"CLASS: {character['class']}\n",
-        f"LEVEL: {character['level']}\n",
-        f"HEALTH: {character['health']}\n",
-        f"MAX_HEALTH: {character['max_health']}\n",
-        f"STRENGTH: {character['strength']}\n",
-        f"MAGIC: {character['magic']}\n",
-        f"EXPERIENCE: {character['experience']}\n",
-        f"GOLD: {character['gold']}\n",
-        f"INVENTORY: {inventory_str}\n",
-        f"ACTIVE_QUESTS: {active_quests_str}\n",
-        f"COMPLETED_QUESTS: {completed_quests_str}\n"
+    with open(file_path, "w") as f:
+        f.write(f"NAME: {character['name']}\n")
+        f.write(f"CLASS: {character['class']}\n")
+        f.write(f"LEVEL: {character['level']}\n")
+        f.write(f"HEALTH: {character['health']}\n")
+        f.write(f"MAX_HEALTH: {character['max_health']}\n")
+        f.write(f"STRENGTH: {character['strength']}\n")
+        f.write(f"MAGIC: {character['magic']}\n")
+        f.write(f"EXPERIENCE: {character['experience']}\n")
+        f.write(f"GOLD: {character['gold']}\n")
+        f.write(f"INVENTORY: {inventory_str}\n")
+        f.write(f"ACTIVE_QUESTS: {active_quests_str}\n")
+        f.write(f"COMPLETED_QUESTS: {completed_quests_str}\n")
 
-    ]
-
-    with open(file_path, 'w') as f:
-        f.writelines(lines)
     return True
     
 
