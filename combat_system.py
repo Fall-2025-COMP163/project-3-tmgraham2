@@ -407,7 +407,7 @@ def get_victory_rewards(enemy):
     # Ensures enemy is defeated
     if enemy['health'] <= 0:
         character_xp = enemy['xp_reward']
-        xp = character_xp + enemy['xp_eward']
+        xp = character_xp + enemy['xp_reward']
         
         character_gold = enemy['gold_reward']
         gold = character_gold + enemy['gold_reward']
