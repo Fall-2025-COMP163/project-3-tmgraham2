@@ -402,26 +402,11 @@ def get_victory_rewards(enemy):
     Calculate rewards for defeating enemy
     
     Returns: Dictionary with 'xp' and 'gold'
-    """
-    # TODO: Implement reward calculation
-    # Ensures enemy is defeated
-    if enemy['health'] <= 0:
-        character_xp = enemy['xp_reward']
-        xp = character_xp + enemy['xp_reward']
-        
-        character_gold = enemy['gold_reward']
-        gold = character_gold + enemy['gold_reward']
-        
-        return {
-            'xp': xp,
-            'gold': gold
-        }
-        
-        
-    pass
-        
-        
-    pass
+    """ 
+    return {
+        "xp": enemy.get("xp_reward", 0),
+        "gold": enemy.get("gold_reward", 0)
+    }
 
 def display_combat_stats(character, enemy):
     """
