@@ -167,7 +167,7 @@ def load_character(character_name, save_directory="data/save_games"):
             f"Save file not found for '{character_name}' at {file_path}")
     
      try:
-        with open(filepath, "r") as f:
+         with open(filepath, "r") as f:
             for line in f:
                 # Skip invalid lines
                 if ":" not in line:
@@ -188,6 +188,11 @@ def load_character(character_name, save_directory="data/save_games"):
 
                 # Store in character dictionary
                 character[key] = value
+
+    except Exception as e:
+        raise InvalidSaveDataError(f"Save data format is invalid for {character_name}: {e}")
+
+       
 
     except Exception as e:
         raise InvalidSaveDataError(f"Save data format is invalid for {character_name}: {e}")
