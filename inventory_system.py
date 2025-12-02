@@ -166,7 +166,7 @@ def equip_weapon(character, item_id, item_data):
 
     # TODO: Implement weapon equipping
     # Check item exists and is type 'weapon'
-if item_id not in character["inventory"]:
+    if item_id not in character["inventory"]:
         raise ItemNotFoundError(f"Weapon '{item_id}' not found in inventory")
 
     # Ensure the item type is 'weapon'
