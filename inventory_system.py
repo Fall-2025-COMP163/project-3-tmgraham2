@@ -163,6 +163,7 @@ def use_item(character, item_id, item_data):
     pass
 
 def equip_weapon(character, item_id, item_data):
+    #AI Use: Google Gemini was used to handle unequipping current weapon if exists
 
     # TODO: Implement weapon equipping
     # Check item exists and is type 'weapon'
