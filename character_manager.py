@@ -158,7 +158,6 @@ def load_character(character_name, save_directory="data/save_games"):
     # Validate data format → InvalidSaveDataError
     # Parse comma-separated lists back into Python lists
 
-    from custom_exceptions import CharacterNotFoundError, InvalidSaveDataError
 
     filename = f"{character_name}_save.txt"
     file_path = os.path.join(save_directory, filename)
