@@ -21,6 +21,42 @@ from custom_exceptions import (
 # ============================================================================
 # CHARACTER MANAGEMENT FUNCTIONS
 # ============================================================================
+def create_character(name, character_class):
+
+    
+    # Validate character_class first
+    valid_char_classes = ["Warrior", "Mage", "Rogue", "Cleric"]
+    
+    # Raise InvalidCharacterClassError if class not in valid list
+    if character_class not in valid_char_classes:
+        raise InvalidCharacterClassError(f"{character_class} is not an available class.")
+    
+    base_stats = {
+        "Warrior": {"health": 120, "strength": 15, "magic": 5}, 
+        "Mage":    {"health": 80,  "strength": 8,  "magic": 20},
+        "Rogue":   {"health": 90,  "strength": 12, "magic": 10},
+        "Cleric":  {"health": 100, "strength": 10, "magic": 15}
+    }
+
+    stats = base_stats[character_class]
+
+    return {
+        "name": name,
+        "class": character_class,
+        "level": 1,
+        "health": stats["health"],
+        "max_health": stats["health"],
+        "strength": stats["strength"],
+        "magic": stats["magic"],
+        "experience": 0, 
+        "gold": 100,
+        # Empty
+        "inventory": [], 
+        "active_quests": [],
+        "completed_quests": [] 
+    }
+
+
 
 def save_character(character, save_directory="data/save_games"):
 
