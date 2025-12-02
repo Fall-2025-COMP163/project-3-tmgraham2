@@ -213,13 +213,9 @@ def revive_character(character):
 # ============================================================================
 # VALIDATION
 # ============================================================================
-
-def validate_character_data(character):
-
-    # TODO: Implement validation
   
-    
 def validate_character_data(character):
+    
     
     # Check all required keys exist
     required_fields = {
