@@ -163,115 +163,73 @@ def use_item(character, item_id, item_data):
     pass
 
 def equip_weapon(character, item_id, item_data):
-    """
-    Equip a weapon
 
-    Args:
-        character: Character dictionary
-        item_id: Weapon to equip
-        item_data: Item information dictionary
-    
-    Weapon effect format: "strength:5" (adds 5 to strength)
-    
-    If character already has weapon equipped:
-    - Unequip current weapon (remove bonus)
-    - Add old weapon back to inventory
-    
-    Returns: String describing equipment change
-    Raises:
-        ItemNotFoundError if item not in inventory
-        InvalidItemTypeError if item type is not 'weapon'
-    """
     # TODO: Implement weapon equipping
     # Check item exists and is type 'weapon'
-    if not has_item(character, item_id):
-        raise ItemNotFoundError(f"You do not have {item_id}")
-    
-    if item_data.get('type') != 'weapon':
-        raise InvalidItemTypeError(f"{item_id} is not a weapon.")
-    # Handle unequipping current weapon if exists
-    effect_str = item_data.get('effect', '')
-    try:
-        stat_name, value = effect_str.split(':')
-        value = int(value)
-    except ValueError:
-        return f"Error: Weapon {item_id} has invalid effect data."
-    # Parse effect and apply to character stats
-    # Store equipped_weapon in character dictionary
-    character['equipped_weapon'] = item_id
-    character['equipped_weapon_bonus'] = {'stat': stat_name, 'value': value}
-    # Remove item from inventory
-    remove_item_from_inventory(character, item_id)
-    previous_weapon = None
-    if character.get('equipped_weapon'):
-        # unequip_weapon returns the ID of the item it removed
-        previous_weapon = unequip_weapon(character)
+if item_id not in character["inventory"]:
+        raise ItemNotFoundError(f"Weapon '{item_id}' not found in inventory")
 
-    text = f"Equipped {item_id} (+{value} {stat_name})."
-    if previous_weapon:
-        text += f" Unequipped {previous_weapon}."
-        
-    return text
-    pass
+    # Ensure the item type is 'weapon'
+    if item_data.get("type") != "weapon":
+        raise InvalidItemTypeError(f"Item '{item_id}' is not a weapon")
+
+    # If the character already has a weapon equipped, unequip weapon
+    old_weapon_id = character.get("equipped_weapon")
+    if old_weapon_id:
+        unequip_weapon(character)
+        character["inventory"].append(old_weapon_id)
+
+    # Equip the new weapon
+    character["equipped_weapon"] = item_id
+
+    # Apply weapon effects 
+    effect = item_data.get("effect")
+    if effect:
+        stat, value = effect.split(":")
+        value = int(value)
+        if stat in character:
+            character[stat] += value
+
+    # Remove the weapon from inventory 
+    character["inventory"].remove(item_id)
+
+    return f"{character['name']} has equipped {item_id}"
+    
+    
 
 def equip_armor(character, item_id, item_data):
-    """
-    Equip armor
-    
-    Args:
-        character: Character dictionary
-        item_id: Armor to equip
-        item_data: Item information dictionary
-    
-    Armor effect format: "max_health:10" (adds 10 to max_health)
-    
-    If character already has armor equipped:
-    - Unequip current armor (remove bonus)
-    - Add old armor back to inventory
-    
-    Returns: String describing equipment change
-    Raises:
-        ItemNotFoundError if item not in inventory
-        InvalidItemTypeError if item type is not 'armor'
-    """
     # TODO: Implement armor equipping
     # Similar to equip_weapon but for armor
-    if not has_item(character, item_id):
-        raise ItemNotFoundError(f"You do not have {item_id}")
-    
-    if item_data.get('type') != 'armor':
-        raise InvalidItemTypeError(f"{item_id} is not armor.")
+if item_id not in character["inventory"]:
+        raise ItemNotFoundError(f"Armor '{item_id}' not found in inventory")
 
-    # 2. Parse Effect
-    effect_str = item_data.get('effect', '')
-    try:
-        stat_name, value = effect_str.split(':')
-        value = int(value)
-    except ValueError:
-        return f"Error: Armor {item_id} has invalid effect data."
+    item = item_data
 
-    # 3. Handle Logistics (Remove new item first to make space)
-    remove_item_from_inventory(character, item_id)
+    # Must be armor
+    if item["type"] != "armor":
+        raise InvalidItemTypeError(f"Item '{item_id}' is not armor")
 
-    # Check if armor is already equipped
-    previous_armor = None
-    if character.get('equipped_armor'):
-        previous_armor = unequip_armor(character)
+    # If armor already equipped, remove its effect 
+    if character.get("equipped_armor"):
+        old_armor = character["equipped_armor"]
+        old_data = item_data[old_armor]
+        stat, value = old_data["effect"].split(":")
+        character[stat] -= int(value)
 
-    # 4. Apply New Stats & State
-    current_stat = character.get(stat_name, 0)
-    character[stat_name] = current_stat + value
-    
-    # Store ID and bonus
-    character['equipped_armor'] = item_id
-    character['equipped_armor_bonus'] = {'stat': stat_name, 'value': value}
+        # Return old armor to inventory
+        character["inventory"].append(old_armor)
 
-    text = f"Equipped {item_id} (+{value} {stat_name})."
-    if previous_armor:
-        text += f" Unequipped {previous_armor}."
-        
-    return text
-    pass
+    # Apply new armor effect
+    stat, value = item["effect"].split(":")
+    character[stat] += int(value)
+
+    # Set equipped armor
+    character["equipped_armor"] = item_id
+
+    # Remove from inventory
+    character["inventory"].remove(item_id)
+
+    return f"Equipped {item_id}, {stat} increased by {value}"
 
 def unequip_weapon(character):
     """
