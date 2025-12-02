@@ -59,7 +59,7 @@ def create_character(name, character_class):
 
 
 def save_character(character, save_directory="data/save_games"):
-
+    # AI Use. Google Gemini was used to handle I/O errors properly
     # TODO: Implement save functionality
     # Handle any file I/O errors appropriately
     
@@ -131,6 +131,7 @@ def list_saved_characters(save_directory="data/save_games"):
     Returns: List of character names (without _save.txt extension)
     """
     # TODO: Implement this function
+    # AI Use. Google Gemini was used to extract character names from file
 
     
     if not os.path.exists(save_directory):
