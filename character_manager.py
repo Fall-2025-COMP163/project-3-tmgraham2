@@ -158,6 +158,8 @@ def load_character(character_name, save_directory="data/save_games"):
     # Validate data format → InvalidSaveDataError
     # Parse comma-separated lists back into Python lists
 
+    from custom_exceptions import CharacterNotFoundError, InvalidSaveDataError
+
     filename = f"{character_name}_save.txt"
     file_path = os.path.join(save_directory, filename)
 
@@ -165,41 +167,33 @@ def load_character(character_name, save_directory="data/save_games"):
         raise CharacterNotFoundError(
             f"Save file not found for '{character_name}' at {file_path}")
     
-    try:
-        with open(file_path, 'r') as f:
-            lines = f.readlines
-    except (IOError, PermissionError) as e:
-        raise SaveFileCorruptedError(f"Could not read file: {file_path}")
+     try:
+        with open(filepath, "r") as f:
+            for line in f:
+                # Skip invalid lines
+                if ":" not in line:
+                    continue
 
-    character = {}
-    
-    expected_keys = [
-        'name', 'class', 'level', 'health', 'max_health', 'strength', 'magic', 
-        'experience', 'gold', 'inventory', 'active_quests', 'completed_quests'
-    ]
+                # Split at the first colon into key and value
+                key, value = line.strip().split(":", 1)
 
-    int_keys = [
-        'LEVEL', 'HEALTH', 'MAX_HEALTH', 'STRENGTH', 'MAGIC', 'EXPERIENCE', 'GOLD'
-    ]
+                # Strip extra whitespace from key and value
+                key = key.strip()
+                value = value.strip()
 
-    list_keys = ['INVENTORY', 'ACTIVE_QUESTS', 'COMPLETED_QUESTS']
+                # Convert comma-separated strings back into lists
+                if "," in value:
+                    value = value.split(",")
+                elif value.isdigit():
+                    value = int(value)
 
-    try:
-        for line in lines:
-            line = line.strip()
-            if not line:
-                continue # Skips empty lines
-            parts = line.split(": ", 1)
-            if len(parts) != 2:
-                raise InvalidSaveDataError('Wrong format: {line}')
-        for key in expected_keys:
-            if key not in character:
-                raise InvalidSaveDataError(f"Save file is missing data for {key}")
+                # Store in character dictionary
+                character[key] = value
+
     except Exception as e:
-        print(f"Failed to parse file: {e}")
-    return character
+        raise InvalidSaveDataError(f"Save data format is invalid for {character_name}: {e}")
 
-    pass
+    return character
 
 def list_saved_characters(save_directory="data/save_games"):
     """
@@ -210,22 +204,10 @@ def list_saved_characters(save_directory="data/save_games"):
     # TODO: Implement this function
     # Return empty list if directory doesn't exist
     # Extract character names from filenames
-    if not os.path.exists(save_directory):
+     if not os.path.exists(save_directory):
         return []
-
-    saved_characters = []
-    suffix = '_save.txt'
-
-    try:
-        files = os.listdir(save_directory)
-
-        for filename in files:
-            if filename.endswith(suffix):
-                name = filename[:-len(suffix)]
-                saved_characters.append(suffix)
-    except Exception as e:
-        print(f"Could not list files in {save_directory}")
-    return []
+    files = os.listdir(save_directory)
+    return [f.replace("_save.txt", "") for f in files if f.endswith("_save.txt")]
 
 
     pass
